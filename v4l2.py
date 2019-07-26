@@ -206,7 +206,9 @@ v4l2_ctrl_type = enum
     V4L2_CTRL_TYPE_INTEGER64,
     V4L2_CTRL_TYPE_CTRL_CLASS,
     V4L2_CTRL_TYPE_STRING,
-) = range(1, 8)
+    V4L2_CTRL_TYPE_BITMASK,
+    V4L2_CTRL_TYPE_INTEGER_MENU
+) = range(1, 10)
 
 
 v4l2_tuner_type = enum
