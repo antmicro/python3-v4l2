@@ -968,12 +968,14 @@ class v4l2_ext_control(ctypes.Structure):
         _fields_ = [
             ('value', ctypes.c_int32),
             ('value64', ctypes.c_int64),
+            ('string', ctypes.c_char_p),
             ('reserved', ctypes.c_void_p),
         ]
 
     _fields_ = [
         ('id', ctypes.c_uint32),
-        ('reserved2', ctypes.c_uint32 * 2),
+        ('size', ctypes.c_uint32),
+        ('reserved2', ctypes.c_uint32 * 1),
         ('_u', _u)
     ]
 
@@ -1020,6 +1022,27 @@ class v4l2_queryctrl(ctypes.Structure):
         ('default', ctypes.c_int32),
         ('flags', ctypes.c_uint32),
         ('reserved', ctypes.c_uint32 * 2),
+    ]
+
+
+V4L2_CTRL_MAX_DIMS = 4
+
+
+class v4l2_query_ext_ctrl(ctypes.Structure):
+    _fields_ = [
+        ('id', ctypes.c_uint32),
+        ('type', v4l2_ctrl_type),
+        ('name', ctypes.c_char * 32),
+        ('minimum', ctypes.c_int64),
+        ('maximum', ctypes.c_int64),
+        ('step', ctypes.c_uint64),
+        ('default', ctypes.c_int64),
+        ('flags', ctypes.c_uint32),
+        ('elem_size', ctypes.c_uint32),
+        ('elems', ctypes.c_uint32),
+        ('nr_of_dims', ctypes.c_uint32),
+        ('dims', ctypes.c_uint32 * V4L2_CTRL_MAX_DIMS),
+        ('reserved', ctypes.c_uint32 * 32),
     ]
 
 
@@ -1950,5 +1973,7 @@ VIDIOC_S_CTRL_OLD = _IOW('V', 28, v4l2_control)
 VIDIOC_G_AUDIO_OLD = _IOWR('V', 33, v4l2_audio)
 VIDIOC_G_AUDOUT_OLD = _IOWR('V', 49, v4l2_audioout)
 VIDIOC_CROPCAP_OLD = _IOR('V', 58, v4l2_cropcap)
+
+VIDIOC_QUERY_EXT_CTRL = _IOWR('V', 103, v4l2_query_ext_ctrl)
 
 BASE_VIDIOC_PRIVATE = 192
