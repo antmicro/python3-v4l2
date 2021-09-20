@@ -968,12 +968,14 @@ class v4l2_ext_control(ctypes.Structure):
         _fields_ = [
             ('value', ctypes.c_int32),
             ('value64', ctypes.c_int64),
+            ('string', ctypes.c_char_p),
             ('reserved', ctypes.c_void_p),
         ]
 
     _fields_ = [
         ('id', ctypes.c_uint32),
-        ('reserved2', ctypes.c_uint32 * 2),
+        ('size', ctypes.c_uint32),
+        ('reserved2', ctypes.c_uint32 * 1),
         ('_u', _u)
     ]
 
@@ -1008,6 +1010,18 @@ def V4L2_CTRL_ID2CLASS(id_):
 def V4L2_CTRL_DRIVER_PRIV(id_):
     return (id_ & 0xffff) >= 0x1000
 
+# Control flags
+V4L2_CTRL_FLAG_DISABLED         = 0x0001
+V4L2_CTRL_FLAG_GRABBED          = 0x0002
+V4L2_CTRL_FLAG_READ_ONLY        = 0x0004
+V4L2_CTRL_FLAG_UPDATE           = 0x0008
+V4L2_CTRL_FLAG_INACTIVE         = 0x0010
+V4L2_CTRL_FLAG_SLIDER           = 0x0020
+V4L2_CTRL_FLAG_WRITE_ONLY       = 0x0040
+V4L2_CTRL_FLAG_VOLATILE         = 0x0080
+V4L2_CTRL_FLAG_HAS_PAYLOAD      = 0x0100
+V4L2_CTRL_FLAG_EXECUTE_ON_WRITE = 0x0200
+V4L2_CTRL_FLAG_MODIFY_LAYOUT    = 0x0400
 
 class v4l2_queryctrl(ctypes.Structure):
     _fields_ = [
@@ -1020,6 +1034,27 @@ class v4l2_queryctrl(ctypes.Structure):
         ('default', ctypes.c_int32),
         ('flags', ctypes.c_uint32),
         ('reserved', ctypes.c_uint32 * 2),
+    ]
+
+
+V4L2_CTRL_MAX_DIMS = 4
+
+
+class v4l2_query_ext_ctrl(ctypes.Structure):
+    _fields_ = [
+        ('id', ctypes.c_uint32),
+        ('type', v4l2_ctrl_type),
+        ('name', ctypes.c_char * 32),
+        ('minimum', ctypes.c_int64),
+        ('maximum', ctypes.c_int64),
+        ('step', ctypes.c_uint64),
+        ('default', ctypes.c_int64),
+        ('flags', ctypes.c_uint32),
+        ('elem_size', ctypes.c_uint32),
+        ('elems', ctypes.c_uint32),
+        ('nr_of_dims', ctypes.c_uint32),
+        ('dims', ctypes.c_uint32 * V4L2_CTRL_MAX_DIMS),
+        ('reserved', ctypes.c_uint32 * 32),
     ]
 
 
@@ -1950,5 +1985,7 @@ VIDIOC_S_CTRL_OLD = _IOW('V', 28, v4l2_control)
 VIDIOC_G_AUDIO_OLD = _IOWR('V', 33, v4l2_audio)
 VIDIOC_G_AUDOUT_OLD = _IOWR('V', 49, v4l2_audioout)
 VIDIOC_CROPCAP_OLD = _IOR('V', 58, v4l2_cropcap)
+
+VIDIOC_QUERY_EXT_CTRL = _IOWR('V', 103, v4l2_query_ext_ctrl)
 
 BASE_VIDIOC_PRIVATE = 192
